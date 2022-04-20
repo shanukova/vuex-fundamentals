@@ -42,10 +42,9 @@
 
 <script>
 import { v4 as uuidv4 } from 'uuid'
-import EventService from '@/services/EventService.js'
 
 export default {
-  data () {
+  data() {
     return {
       categories: [
         'sustainability',
@@ -75,13 +74,19 @@ export default {
         id: uuidv4(),
         organizer: this.$store.state.user
       }
-      EventService.postEvent(event)
+      this.$store
+        .dispatch('createEvent', event)
         .then(() => {
-          // add event to Vuex state
-          this.$store.commit('ADD_EVENT', event)
+          this.$router.push({
+            name: 'EventDetails',
+            params: { id: event.id }
+          })
         })
         .catch(error => {
-          console.log(error)
+          this.$router.push({
+            name: 'ErrorDisplay',
+            params: { error: error }
+          })
         })
     }
   }
